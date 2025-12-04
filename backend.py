@@ -5,10 +5,8 @@ import requests
 from typing import Annotated, Any, Dict, Optional, TypedDict
 from dotenv import load_dotenv
 
-# --- Force Load Environment ---
 load_dotenv()
 
-# Force Set Pinecone Key to avoid library errors
 pinecone_key = os.getenv("PINECONE_API_KEY")
 if pinecone_key:
     os.environ["PINECONE_API_KEY"] = pinecone_key
@@ -33,7 +31,6 @@ PINECONE_INDEX_NAME = "chatbot-rag"
 
 # --- Tools ---
 search_tool = DuckDuckGoSearchRun(region="us-en")
-# Using the modern model (size 3072) to match your new index
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 def ingest_pdf(file_bytes: bytes, thread_id: str, filename: Optional[str] = None):
@@ -99,12 +96,9 @@ def rag_tool(query: str, config: RunnableConfig) -> dict:
     """Search Pinecone Cloud for document content."""
     thread_id = config.get("configurable", {}).get("thread_id")
     
-    # Connect WITHOUT passing the key explicitly
-    # (It finds it automatically from os.environ we set at the top)
     vector_store = PineconeVectorStore.from_existing_index(
         index_name=PINECONE_INDEX_NAME, 
         embedding=embeddings
-        # REMOVED: pinecone_api_key=pinecone_key 
     )
     
     # Filter by thread_id to ensure privacy

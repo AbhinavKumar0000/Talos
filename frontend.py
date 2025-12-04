@@ -1,7 +1,7 @@
 import streamlit as st
 import uuid
 import asyncio
-import backend as bk # <--- Pointing to the new backend.py
+import backend as bk 
 from dotenv import load_dotenv
 import os
 
